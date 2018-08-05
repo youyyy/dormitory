@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.dormitory.dao.StudentDao">
+    <resultMap type="com.youyi.dormitory.entity.Student" id="studentMap">
+        <id column="sid" property="sid"/>
+        <result column="name" property="name"/>
+        <result column="sex" property="sex"/>
+        <result column="phone" property="phone"/>
+        <result column="department" property="department"/>
+        <association property="dormitory" column="did" javaType="com.youyi.dormitory.entity.Dormitory">
+            <id column="did" property="did"/>
+            <result column="num" property="num"/>
+            <association property="building" column="bid" javaType="com.youyi.dormitory.entity.Building">
+                <id column="bid" property="bid"/>
+                <result column="bname" property="bname"/>
+                <result column="place" property="place"/>
+            </association>
+        </association>
+    </resultMap>
+    <select id="queryStudents" resultMap="studentMap">
+        SELECT s.sid,s.name,s.sex,s.phone,s.department,d.did,d.num,b.bid,b.bname,b.place
+        FROM
+        student s,dormitory d,building b
+        WHERE s.did = d.did
+        AND
+        d.bid = b.bid
+        ORDER BY sid;
+    </select>
+    <select id="queryStudentByDid" resultMap="studentMap">
+        SELECT s.sid,s.name,s.sex,s.phone,s.department,d.did,d.num,b.bid,b.bname,b.place
+        FROM
+        student s,dormitory d,building b
+        WHERE s.did = d.did
+        AND
+        d.bid = b.bid
+        AND
+        s.did = #{did}
+        ORDER BY sid;
+    </select>
+    <select id="queryStudentCountByDid" resultType="int">
+        SELECT count(*)
+        FROM
+        student s
+        WHERE
+        s.did = #{did}
+    </select>
+    <select id="queryStudentBySid" resultMap="studentMap">
+        SELECT s.sid,s.name,s.sex,s.phone,s.department,d.did,d.num,b.bid,b.bname,b.place
+        FROM
+        student s,dormitory d,building b
+        WHERE s.did = d.did
+        AND
+        d.bid = b.bid
+        AND
+        s.sid = #{sid}
+        ORDER BY sid;
+    </select>
+    <insert id="insertStudent" parameterType="com.youyi.dormitory.entity.Student" useGeneratedKeys="true" keyProperty="sid" keyColumn="sid">
+        INSERT INTO
+        student(name,sex,phone,department,did)
+        VALUES
+        (#{name},#{sex},#{phone},#{department},#{dormitory.did});
+    </insert>
+    <update id="updateStudent" parameterType="com.youyi.dormitory.entity.Student">
+        UPDATE student
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="department != null">department = #{department},</if>
+            <if test="dormitory != null">did = #{dormitory.did}</if>
+        </set>
+        WHERE sid = #{sid};
+    </update>
+    <delete id="deleteStudent">
+        DELETE FROM student
+        WHERE
+        sid = #{sid};
+    </delete>
+    <delete id="deleteStudentByDid">
+        DELETE FROM student
+        WHERE
+        did = #{did};
+    </delete>
+    <update id="updateStudentDidToNull">
+        UPDATE student
+        SET
+        did = NULL
+        WHERE did=#{did};
+    </update>
+</mapper>

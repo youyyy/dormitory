@@ -1,0 +1,25 @@
+spring:
+  ##数据库连接信息
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dormitory?characterEncoding=utf8&useSSL=true
+    password: root
+    username: root
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .jsp
+  mvc:
+    static-path-pattern: /static/**
+mybatis:
+  ##指向mapper的xml文件位置
+  mapper-locations: /mapper/**.xml
+  ##实体类
+  ##type-aliases-package: com.youyi.dormitory.entity
+  configuration:
+    ##使用jdbc的getGeneratedKeys获取数据库自增主键值
+    use-generated-keys: true
+    ##使用列标签替换列别名 默认:true
+    use-column-label: true
+    ##开启驼峰命名转换:Table{create_time} -> Entity{createTime}
+    map-underscore-to-camel-case: true
+    ##log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.dormitory.dao.ZsztDao">
+    <resultMap type="com.youyi.dormitory.entity.Zszt" id="zsztMap">
+        <id column="zid" property="zid"/>
+        <result column="date" property="date"/>
+        <result column="zt" property="zt"/>
+        <association property="dormitory" column="did" javaType="com.youyi.dormitory.entity.Dormitory">
+            <id column="did" property="did"/>
+            <result column="num" property="num"/>
+            <result column="max_man" property="maxMan"/>
+            <association property="building" column="bid" javaType="com.youyi.dormitory.entity.Building">
+                <id column="bid" property="bid"/>
+                <result column="bname" property="bname"/>
+                <result column="place" property="place"/>
+            </association>
+        </association>
+    </resultMap>
+    <select id="queryZszts" resultMap="zsztMap">
+        SELECT z.zid,z.date,z.zt,d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        zszt z,dormitory d,building b
+        WHERE d.did = z.did
+        AND d.bid=b.bid
+        ORDER BY zid;
+    </select>
+    <select id="queryZsztByZid" resultMap="zsztMap">
+        SELECT z.zid,z.date,z.zt,d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        zszt z,dormitory d,building b
+        WHERE z.did = d.did
+        AND
+        d.bid = b.bid
+        AND
+        z.zid = #{zid}
+        ORDER BY zid;
+    </select>
+    <select id="queryZsztByDate" resultMap="zsztMap" parameterType="java.util.Date">
+        SELECT z.zid,z.date,z.zt,d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        zszt z,dormitory d,building b
+        WHERE z.did = d.did
+        AND
+        d.bid = b.bid
+        AND
+        z.date = #{date}
+        ORDER BY zid;
+    </select>
+    <select id="queryZsztByDid" resultMap="zsztMap">
+        SELECT z.zid,z.date,z.zt,d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        zszt z,dormitory d,building b
+        WHERE z.did = d.did
+        AND
+        d.bid = b.bid
+        AND
+        z.did = #{did}
+        ORDER BY zid;
+    </select>
+    <insert id="insertZszt" parameterType="com.youyi.dormitory.entity.Zszt" useGeneratedKeys="true" keyProperty="zid" keyColumn="zid">
+        INSERT INTO
+        zszt(did,date,zt)
+        VALUES
+        (#{dormitory.did},#{date},#{zt});
+    </insert>
+    <update id="updateZszt" parameterType="com.youyi.dormitory.entity.Zszt">
+        UPDATE zszt
+        <set>
+            <if test="dormitory != null">did = #{dormitory.did},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="zt != null">zt = #{zt}</if>
+        </set>
+        WHERE zid = #{zid};
+    </update>
+    <delete id="deleteZsztByZid">
+        DELETE FROM zszt
+        WHERE
+        zid = #{zid};
+    </delete>
+    <delete id="deleteZsztByDid">
+        DELETE FROM zszt
+        WHERE
+        did = #{did};
+    </delete>
+    <delete id="deleteZsztByDate">
+        DELETE FROM zszt
+        WHERE
+        date = #{date};
+    </delete>
+</mapper>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.dormitory.dao.BuildingDao">
+    <select id="queryBuildings" resultType="com.youyi.dormitory.entity.Building">
+        SELECT b.bid,b.bname,b.place
+        FROM
+        building b
+        ORDER BY bid;
+    </select>
+    <select id="queryBuildingById" resultType="com.youyi.dormitory.entity.Building" parameterType="int">
+        SELECT b.bid,b.bname,b.place
+        FROM
+        building b
+        WHERE b.bid = #{bid}
+    </select>
+    <insert id="insertBuilding" parameterType="com.youyi.dormitory.entity.Building" useGeneratedKeys="true" keyProperty="bid" keyColumn="bid">
+        INSERT INTO
+        building(bname,place)
+        VALUES
+        (#{bname},#{place});
+    </insert>
+    <update id="updateBuilding" parameterType="com.youyi.dormitory.entity.Building">
+        UPDATE building
+        <set>
+            <if test="bname != null">bname = #{bname},</if>
+            <if test="place != null">place = #{place}</if>
+        </set>
+        WHERE bid = #{bid};
+    </update>
+    <delete id="deleteBuilding">
+        DELETE FROM building
+        WHERE
+        bid = #{bid};
+    </delete>
+</mapper>

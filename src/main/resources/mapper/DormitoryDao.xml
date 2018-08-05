@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.youyi.dormitory.dao.DormitoryDao">
+    <resultMap id="dormitoryMap" type="com.youyi.dormitory.entity.Dormitory">
+        <id column="did" property="did"/>
+        <result column="num" property="num"/>
+        <result column="max_man" property="maxMan"/>
+        <association property="building" column="bid" javaType="com.youyi.dormitory.entity.Building">
+            <id column="bid" property="bid"/>
+            <result column="bname" property="bname"/>
+            <result column="place" property="place"/>
+        </association>
+    </resultMap>
+    <select id="queryDormitories" resultMap="dormitoryMap">
+        SELECT d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        dormitory d,building b
+        WHERE d.bid = b.bid
+        ORDER BY did;
+    </select>
+    <select id="queryDormitoryById" resultMap="dormitoryMap" parameterType="int">
+        SELECT  d.did,d.num,d.max_man,b.bid,b.bname,b.place
+        FROM
+        dormitory d,building b
+        WHERE d.bid = b.bid
+        AND d.did = #{did}
+        ORDER BY did;
+    </select>
+    <insert id="insertDormitory" useGeneratedKeys="true" parameterType="com.youyi.dormitory.entity.Dormitory"
+            keyProperty="did" keyColumn="did">
+        INSERT INTO
+        dormitory(bid,num,max_man)
+        VALUES
+        (#{building.bid},#{num},#{maxMan});
+    </insert>
+    <update id="updateDormitory" parameterType="com.youyi.dormitory.entity.Dormitory">
+        UPDATE dormitory
+        <set>
+            <if test="building != null">bid = #{building.bid},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="maxMan != null">max_man = #{maxMan}</if>
+        </set>
+        WHERE did = #{did};
+    </update>
+    <delete id="deleteDormitory">
+        DELETE FROM dormitory
+        WHERE
+        did = #{did};
+    </delete>
+    <delete id="deleteDormitoryByBid">
+        DELETE FROM dormitory
+        WHERE
+        bid = #{bid};
+    </delete>
+</mapper>

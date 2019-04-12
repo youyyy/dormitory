@@ -66,7 +66,7 @@
                 </ol>
             </div>
             <div id="main" style="padding-top: 10px;">
-                <h1>gzk的后台管理系统</h1>
+                <h1>yi的后台管理系统</h1>
             </div>
         </div>
     </div>
